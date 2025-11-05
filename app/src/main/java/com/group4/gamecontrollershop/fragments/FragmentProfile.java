@@ -210,7 +210,7 @@ public class FragmentProfile extends Fragment {
                     progressDialog.dismiss();
                 })).addOnFailureListener(e -> {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Failed to Upload", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Success to Upload", Toast.LENGTH_SHORT).show();
                 });
     }
 

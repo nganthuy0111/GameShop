@@ -109,57 +109,9 @@
         android:layout_below="@id/signupPrompt"
         android:onClick="onSignUpClick"
         tools:ignore="OnClick" />
-
-
-
-
-    <!-- Separation Line (Optional for better structure) -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="16dp"
         android:layout_gravity="center"/>
-    <!-- Or Sign in with -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/others"
-        android:text="or sign in with"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center"/>
-    <!-- Social Icons Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/socialicons"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
-
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="12dp"
-            android:id="@+id/google"
-            android:src="@drawable/google"
-            android:contentDescription="Google Login"/>
-
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="12dp"
-            android:id="@+id/facebook"
-            android:src="@drawable/fb"
-            android:contentDescription="Facebook Login"/>
-
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="12dp"
-            android:src="@drawable/twitter"
-            android:contentDescription="Twitter Login"/>
-    </LinearLayout>
-
-
 </LinearLayout>
