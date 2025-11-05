@@ -92,13 +92,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (itemId == R.id.action_cart) {
             openCart();
             return true;
-        } else if (itemId == R.id.action_notifications) {
-            openNotifications();
-            return true;
-        } else if (itemId == R.id.action_location) {
-            openLocation();
-            return true;
-        } else {
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
     }

@@ -90,17 +90,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Google Sign-In button
-        findViewById(R.id.google).setOnClickListener(view -> {
-            Intent signInIntent = googleSignInClient.getSignInIntent();
-            activityResultLauncher.launch(signInIntent);
-        });
-
-        // Facebook Sign-In button
-        findViewById(R.id.facebook).setOnClickListener(view -> {
-            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
-        });
-
         loginButton.setOnClickListener(view -> loginUser());
     }
 
