@@ -244,7 +244,7 @@ public class CartActivity extends AppCompatActivity {
                         }
 
                         // Insert order with order details
-                        myDB.insertOrder(userId, totalAmount, orderDate, "success", orderDetails);
+                        long orderId = myDB.insertOrder(userId, totalAmount, orderDate, "success", orderDetails);
 
                         // Reduce product quantities in the database
                         for (CartItem cartItem : cartItemList) {
@@ -259,12 +259,16 @@ public class CartActivity extends AppCompatActivity {
                         cartItemList.clear(); // Clear the local cart list
                         productCartAdapter.notifyDataSetChanged(); // Refresh cart RecyclerView
 
-                        Intent intent = new Intent("com.group4.gamecontrollershop.ORDER_PLACED");
-                        sendBroadcast(intent);
+                        Intent broadcastIntent = new Intent("com.group4.gamecontrollershop.ORDER_PLACED");
+                        sendBroadcast(broadcastIntent);
 
-                        // Update total price display and empty state
-                        updateTotalPrice();
-                        checkEmptyState();
+                        // Navigate to Payment Success Activity
+                        Intent successIntent = new Intent(this, PaymentSuccessActivity.class);
+                        successIntent.putExtra("orderId", String.valueOf(orderId));
+                        successIntent.putExtra("amount", String.format("%.2f", totalAmount));
+                        successIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(successIntent);
+                        finish(); // Close CartActivity
                     } catch (Exception e) {
                         Log.e("PaymentError", "Error processing payment: " + e.getMessage());
                     }

@@ -610,8 +610,9 @@ public List<Order> getAllOrders(int userId) {
     return orderList;
 }
 
-    public void insertOrder(int userId, double totalAmount, String orderDate, String status, List<OrderDetail> orderDetails) {
+    public long insertOrder(int userId, double totalAmount, String orderDate, String status, List<OrderDetail> orderDetails) {
         SQLiteDatabase db = this.getWritableDatabase();
+        long orderId = -1;
 
         // Start transaction
         db.beginTransaction();
@@ -624,7 +625,7 @@ public List<Order> getAllOrders(int userId) {
             orderValues.put("status", status);
 
             // Use double quotes to escape the table name
-            long orderId = db.insert("\"Order\"", null, orderValues);
+            orderId = db.insert("\"Order\"", null, orderValues);
 
             // Check if order was inserted successfully
             if (orderId == -1) {
@@ -656,11 +657,13 @@ public List<Order> getAllOrders(int userId) {
             db.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace(); // Handle the error appropriately in your app
+            orderId = -1; // Return -1 on error
         } finally {
             // End the transaction
             db.endTransaction();
             db.close();
         }
+        return orderId;
     }
 
 //    public void insertOrder(int userId, double totalAmount, String orderDate, String status, List<OrderDetail> orderDetails) {
