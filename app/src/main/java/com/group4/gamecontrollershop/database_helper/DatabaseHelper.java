@@ -499,37 +499,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return affectedRows > 0;
     }
 
-//    public List<Order> getAllOrders(int userId) {
-//        List<Order> orderList = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Update format as needed
-//
-//        Cursor cursor = db.query("`Order`", new String[]{"id", "totalAmount", "orderDate", "status"},
-//                "userId=?", new String[]{String.valueOf(userId)}, null, null, null);
-//
-//        if (cursor != null && cursor.moveToFirst()) {
-//            do {
-//                int orderId = cursor.getInt(0);
-//                double totalAmount = cursor.getDouble(1);
-//                String orderDateString = cursor.getString(2);
-//                String status = cursor.getString(3);
-//
-//                Date orderDate = null;
-//                try {
-//                    orderDate = dateFormat.parse(orderDateString); // Parse the date
-//                } catch (ParseException e) {
-//                    e.printStackTrace(); // Handle parsing exception
-//                }
-//
-//                Order order = new Order(orderId, userId, totalAmount, orderDate, status,null);
-//                orderList.add(order);
-//            } while (cursor.moveToNext());
-//
-//            cursor.close();
-//        }
-//
-//        return orderList;
-//    }
 public List<Order> getAllOrders(int userId) {
     List<Order> orderList = new ArrayList<>();
     SQLiteDatabase db = this.getReadableDatabase();

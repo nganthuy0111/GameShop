@@ -168,8 +168,13 @@ public class GameControllerDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         int userId = 1; // Get user ID from current user
+
+
+
+
+
+
         List<Favorite> favoriteList = myDB.getFavoriteList(userId);
         for (Favorite favoriteItem: favoriteList) {
             if (favoriteItem.getProduct().getId() == productId) {
