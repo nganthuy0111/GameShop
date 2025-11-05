@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "789120185067",
+    "project_id": "game-controller-shop-50da9",
+    "storage_bucket": "game-controller-shop-50da9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789120185067:android:525be158c3293cd738c4ae",
+        "android_client_info": {
+          "package_name": "com.group4.gamecontrollershop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789120185067-r4rkr4cs1d3sjs1enl0biadek5kicujb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group4.gamecontrollershop",
+            "certificate_hash": "be3a9dc91b10d6410a01ef79fc83e2ea73abb8cf"
+          }
+        },
+        {
+          "client_id": "789120185067-9jterrv89f1l8l56clb6bhqgjieavmf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4QgNSFxTK9AyHi1iVAg24LAmztKYU9CE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789120185067-9jterrv89f1l8l56clb6bhqgjieavmf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

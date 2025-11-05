@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mHome"
+        android:icon="@drawable/home_circle"
+        android:title="@string/menu_home_txt" />
+    <item
+        android:id="@+id/mSearch"
+        android:icon="@drawable/magnify"
+        android:title="@string/menu_search_txt" />
+    <item
+        android:id="@+id/mHistory"
+        android:icon="@drawable/history"
+        android:title="@string/menu_history_txt" />
+    <item
+        android:id="@+id/mProfile"
+        android:icon="@drawable/face_man_profile"
+        android:title="@string/menu_profile_txt" />
+</menu>
+

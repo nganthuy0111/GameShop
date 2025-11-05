@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:background="@drawable/half_circle"
+            />
+
+        <RelativeLayout
+            android:id="@+id/imagelayout"
+            android:paddingTop="3dp"
+            android:layout_marginTop="2dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="105dp"
+                android:layout_height="105dp"
+                android:layout_marginTop="50dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_profile" />
+
+
+
+            <Button
+                android:id="@+id/uploadImageBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profileImage"
+                android:layout_marginTop="20dp"
+                android:text="Upload Image"
+                android:layout_centerHorizontal="true" />
+
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/circleLayouts"
+            android:layout_below="@+id/imagelayout"
+            android:layout_marginTop="-20dp"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/BoostButton"
+                android:layout_marginTop="34dp"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_about"
+                android:elevation="5dp"
+                android:scaleType="centerInside"
+                app:tint="@color/black" />
+
+
+
+            <TextView
+                android:layout_below="@+id/BoostButton"
+                android:id="@+id/tv_Boost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Lbl_About"
+                android:textColor="#444"
+                android:gravity="center"
+                android:layout_marginTop="3dp"
+                android:layout_centerHorizontal="true"
+                android:textSize="12sp" />
+            <RelativeLayout
+                android:id="@+id/editprofile_button_rlayout"
+                android:clickable="true"
+                android:layout_marginStart="65dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/BoostButton"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageButton
+                    android:id="@+id/EditButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:elevation="5dp"
+                    android:src="@drawable/ic_edit_btn"
+                    android:scaleType="centerInside"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:layout_below="@+id/EditButton"
+                    android:id="@+id/tv_Edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Lbl_EditProfile"
+                    android:textAlignment="center"
+                    android:textColor="#444"
+                    android:layout_marginTop="3dp"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/settings_button_rlayout"
+                android:clickable="true"
+                android:layout_marginEnd="65dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="30dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageButton
+                    android:id="@+id/SettingsButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:elevation="5dp"
+                    android:src="@drawable/ic_settings_btn"
+                    android:scaleType="centerInside"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:layout_below="@+id/SettingsButton"
+                    android:id="@+id/settingstextview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Lbl_Settings"
+                    android:textColor="#444"
+                    android:layout_marginStart="4dp"
+                    android:textAlignment="center"
+                    android:layout_marginTop="3dp"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+
+
+
+        <RelativeLayout
+            android:layout_below="@+id/circleLayouts"
+            android:id="@+id/StFirstLayout"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:paddingEnd="10dp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/StImage1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_rate"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/St_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#444"
+                android:layout_toEndOf="@+id/StImage1"
+                android:layout_marginEnd="15dp"
+                android:text="@string/Lbl_Rate_Us"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+            <TextView
+                android:id="@+id/d_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:layout_toEndOf="@+id/StImage1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="25dp"
+                android:text="@string/Lbl_Rate"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/StsecoundLayout"
+            android:layout_below="@+id/StFirstLayout"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/StImage2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_invite_friend"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/St_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#444"
+                android:layout_toEndOf="@+id/StImage2"
+                android:layout_marginEnd="15dp"
+                android:text="@string/Lbl_InviteFriends"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+            <TextView
+                android:id="@+id/d_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:layout_toEndOf="@+id/StImage2"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="25dp"
+                android:text="@string/Lbl_InviteFriendsToTheApp"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/StthirdLayout"
+            android:layout_below="@+id/StsecoundLayout"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/StImage3"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_help_outline"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/St_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#444"
+                android:layout_toEndOf="@+id/StImage3"
+                android:layout_marginEnd="15dp"
+                android:text="@string/Lbl_NeedHelp"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+            <TextView
+                android:id="@+id/d_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:layout_toEndOf="@+id/StImage3"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="25dp"
+                android:text="@string/Lbl_ContactUs_Privacy"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/StFourthLayout"
+            android:layout_below="@+id/StthirdLayout"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/StImage31"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_system_update"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerCrop"
+                app:tint="@color/black" />
+            <TextView
+                android:id="@+id/St_31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#444"
+                android:layout_toEndOf="@+id/StImage31"
+                android:layout_marginEnd="15dp"
+                android:text="@string/Lbl_Update"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+            <TextView
+                android:id="@+id/d_31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:layout_toEndOf="@+id/StImage31"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="25dp"
+                android:text="@string/Lbl_Version_update"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/StFifthLayout"
+            android:layout_below="@+id/StFourthLayout"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/StImageSignOut"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_profile"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerCrop"
+                app:tint="@color/black" />
+
+            <TextView
+                android:id="@+id/StSignOutText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#444"
+                android:layout_toEndOf="@+id/StImageSignOut"
+                android:layout_marginEnd="15dp"
+                android:text="Sign Out"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+
+            <TextView
+                android:id="@+id/dSignOutDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:layout_toEndOf="@+id/StImageSignOut"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="25dp"
+                android:text="Tap to sign out"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+
+        </RelativeLayout>
+
+
+
+
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

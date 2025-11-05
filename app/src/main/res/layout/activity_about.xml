@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".AboutActivity">
+
+    <!-- Title of the About Page -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="About Our Class Project"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#333"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Image representing the project (Optional) -->
+
+    <!-- Main content -->
+    <ImageView
+        android:id="@+id/img_project"
+        android:layout_width="163dp"
+        android:layout_height="142dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="100dp"
+        android:contentDescription="Project Image"
+        android:src="@drawable/fpt_university_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Đây là dự án lớp của team Thành Đăng Sơn. Dự án được thực hiện chỉ với mục đích học tập, nhằm tìm hiểu và nâng cao kiến thức về phát triển ứng dụng. Chúng tôi đã tập trung vào việc phát triển một ứng dụng bán các thiết bị điều khiển trò chơi (game controllers) như một bài tập thực hành thực tế.\n\nDự án bao gồm việc nghiên cứu và tích hợp các công nghệ liên quan, từ giao diện người dùng đến các chức năng, thanh toán. Mặc dù đây là dự án học tập, chúng tôi đã nỗ lực để ứng dụng có thể mô phỏng trải nghiệm người dùng thực tế nhất.\n\nChúng tôi hy vọng rằng thông qua dự án này, nhóm sẽ có thêm nhiều kiến thức và kinh nghiệm thực tế trong lĩnh vực phát triển phần mềm."
+        android:textSize="16sp"
+        android:lineSpacingMultiplier="1.3"
+        android:textColor="#555"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_project"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- Footer text or some additional info -->
+    <TextView
+        android:id="@+id/tv_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="© 2024 Thành Đăng Sơn Team"
+        android:textSize="14sp"
+        android:textColor="#999"
+        android:layout_marginTop="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
