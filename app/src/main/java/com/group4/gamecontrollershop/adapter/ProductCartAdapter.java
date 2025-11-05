@@ -60,9 +60,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     class ProductViewHolder extends RecyclerView.ViewHolder {
         private ImageView productImage;
         private TextView productName, productPrice, productQuantity;
-        private Button btnPlus, btnMinus, btnRemove;
-
-
+        private Button btnPlus, btnMinus;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,12 +70,9 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             productImage = itemView.findViewById(R.id.productImage);
             btnPlus = itemView.findViewById(R.id.btnPlus);
             btnMinus = itemView.findViewById(R.id.btnMinus);
-            btnRemove = itemView.findViewById(R.id.btnRemove);
 
             btnPlus.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-
-
                 if (position != RecyclerView.NO_POSITION) {
                     CartItem cartItem = cartItemList.get(position);
                     // Check if the current quantity is less than the max quantity
@@ -91,7 +86,6 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
                 }
             });
 
-
             btnMinus.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -103,18 +97,6 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
                             listener.onQuantityChanged(position);
                         }
                     }
-                }
-            });
-
-            btnRemove.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    if (listener != null) {
-                        listener.onItemRemoved(position);
-                    }
-                    cartItemList.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, cartItemList.size());
                 }
             });
         }
