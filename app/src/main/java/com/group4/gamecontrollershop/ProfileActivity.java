@@ -29,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.group4.gamecontrollershop.database_helper.DatabaseHelper;
 import com.group4.gamecontrollershop.databinding.ActivityProfileBinding;
+import com.group4.gamecontrollershop.model.User;
 import android.Manifest; // This is necessary for using the Manifest.permission constants
 
 import java.text.SimpleDateFormat;
@@ -78,6 +79,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Set up the sign-out button
         binding.StFifthLayout.setOnClickListener(v -> signOut());
 
+        // Set up Admin Panel (only visible for admin)
+        checkAdminAccess();
 
         // Set up click listeners for navigation
         binding.BoostButton.setOnClickListener(v -> startActivity(new Intent(ProfileActivity.this, AboutActivity.class)));
@@ -257,6 +260,29 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
 
         Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    private void checkAdminAccess() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+
+        if (userId != null) {
+            User user = databaseHelper.getUserById(userId);
+            if (user != null && "admin".equalsIgnoreCase(user.getRole())) {
+                // Show Admin Panel
+                binding.AdminLayout.setVisibility(View.VISIBLE);
+                binding.AdminLayout.setOnClickListener(v -> {
+                    Intent intent = new Intent(ProfileActivity.this, AdminActivity.class);
+                    startActivity(intent);
+                });
+            } else {
+                // Hide Admin Panel
+                binding.AdminLayout.setVisibility(View.GONE);
+            }
+        } else {
+            // Hide Admin Panel
+            binding.AdminLayout.setVisibility(View.GONE);
+        }
     }
 }
 

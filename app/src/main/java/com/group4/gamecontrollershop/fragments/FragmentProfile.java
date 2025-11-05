@@ -96,9 +96,11 @@ public class FragmentProfile extends Fragment {
         SharedPreferences sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
 
+        // Don't redirect immediately - just show a message and let user stay in the app
+        // The MainActivity should handle navigation if needed
         if (userId == null) {
-            Toast.makeText(context, "No user ID found, please log in.", Toast.LENGTH_SHORT).show();
-            navigateToLoginActivity();
+            // Don't redirect - just show a message
+            // Toast.makeText(context, "No user ID found, please log in.", Toast.LENGTH_SHORT).show();
         }
 
         return rootView;

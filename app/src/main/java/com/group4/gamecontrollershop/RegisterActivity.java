@@ -71,6 +71,8 @@ public class RegisterActivity extends AppCompatActivity {
             values.put("googleId", (Integer) null); // Google ID, if applicable
             values.put("status", "notverified"); // Default status
             values.put("phone", emailStr); // Phone number if applicable
+            values.put("fullname", name); // Add fullname
+            values.put("role", "user"); // Default role is "user"
 
             long newRowId = db.insert("User", null, values);
             if (newRowId != -1) {

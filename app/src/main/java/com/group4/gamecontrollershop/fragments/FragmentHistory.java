@@ -25,6 +25,7 @@ import com.group4.gamecontrollershop.model.Order;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,17 +60,14 @@ public class FragmentHistory extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null); // Default is null if not found
 
-        if (userId == null) {
-            // Handle case where userId is not found
-            // Redirect to login or show an alert dialog
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivity(intent);
-            getActivity().finish();
-            return view;
+        // Don't redirect immediately - just show empty list if userId is null
+        if (userId != null) {
+            // Fetch all orders for the current user
+            orderList = myDB.getAllOrders(Integer.parseInt(userId));
+        } else {
+            // Initialize empty list if userId is null
+            orderList = new ArrayList<>();
         }
-
-        // Fetch all orders for the current user
-        orderList = myDB.getAllOrders(Integer.parseInt(userId));
 
 //        // If no orders exist, insert sample orders (for testing purposes)
 //        if (orderList.isEmpty()) {
