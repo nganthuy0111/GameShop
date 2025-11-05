@@ -349,9 +349,61 @@
         </RelativeLayout>
 
 
+        <!-- Admin Panel (only visible for admin) -->
+        <RelativeLayout
+            android:id="@+id/AdminLayout"
+            android:layout_below="@+id/StFourthLayout"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/AdminImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@android:drawable/ic_menu_manage"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/AdminText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FF5722"
+                android:layout_toEndOf="@+id/AdminImage"
+                android:layout_marginEnd="15dp"
+                android:text="Admin Panel"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="0dp" />
+            <TextView
+                android:id="@+id/AdminDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:layout_toEndOf="@+id/AdminImage"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="25dp"
+                android:text="Manage products and users"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp" />
+        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/StFifthLayout"
-            android:layout_below="@+id/StFourthLayout"
+            android:layout_below="@+id/AdminLayout"
             android:layout_width="match_parent"
             android:clickable="true"
             android:background="?attr/selectableItemBackground"

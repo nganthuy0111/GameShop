@@ -35,9 +35,9 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
         OrderDetail orderDetail = orderDetailList.get(position);
 
         // Set product name using the actual product name
-        holder.productName.setText(orderDetail.getProductName()); // Update this line to get the product name
+        holder.productName.setText(orderDetail.getProductName());
         holder.productQuantity.setText("Quantity: " + orderDetail.getQuantity());
-        holder.productPrice.setText("$" + orderDetail.getPrice());
+        holder.productPrice.setText("$" + String.format("%.2f", orderDetail.getPrice()));
 
         // Load the product image using the image URL from the orderDetail
         String imageUrl = orderDetail.getImageUrl(); // Get the image URL from orderDetail

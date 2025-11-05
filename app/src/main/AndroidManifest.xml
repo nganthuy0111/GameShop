@@ -90,6 +90,15 @@
         <activity
             android:name=".GameControllerDetailActivity"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AdminActivity"
+            android:parentActivityName=".ProfileActivity" />
+        <activity
+            android:name=".ProductManagementActivity"
+            android:parentActivityName=".AdminActivity" />
+        <activity
+            android:name=".UserManagementActivity"
+            android:parentActivityName=".AdminActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
