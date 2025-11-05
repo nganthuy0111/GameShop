@@ -85,6 +85,9 @@
             android:name=".CartActivity"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".PaymentSuccessActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".GameControllerDetailActivity"
             android:parentActivityName=".MainActivity" />
 

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <!-- Success Icon -->
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_success"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Success" />
+
+    <!-- Success Title -->
+    <TextView
+        android:id="@+id/tvSuccessTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Successful!"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="16dp"
+        android:gravity="center" />
+
+    <!-- Success Message -->
+    <TextView
+        android:id="@+id/tvSuccessMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your payment has been processed successfully.\nThank you for your purchase!"
+        android:textSize="16sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"
+        android:lineSpacingExtra="4dp" />
+
+    <!-- Order Details Card (Optional) -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#F5F5F5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvOrderId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order ID: #12345"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount: $0.00"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Buttons Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Home Button -->
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Back to Home"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Continue Shopping Button -->
+        <Button
+            android:id="@+id/btnContinueShopping"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Continue Shopping"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:textStyle="bold"
+            style="@android:style/Widget.Material.Button.Borderless" />
+
+    </LinearLayout>
+
+</LinearLayout>

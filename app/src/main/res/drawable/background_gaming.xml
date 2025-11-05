@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Gaming Background Image -->
+    <!-- Hình nền gaming sẽ được đặt tên là gaming_background.jpg trong thư mục drawable -->
+    <item>
+        <bitmap
+            android:src="@drawable/gaming_background"
+            android:gravity="fill"/>
+    </item>
+    <!-- Overlay mờ màu đen với opacity 0.5 (50%) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#80000000"/>
+        </shape>
+    </item>
+</layer-list>
+

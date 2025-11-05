@@ -7,10 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +45,8 @@ public class CartActivity extends AppCompatActivity {
     private List<CartItem> cartItemList = new ArrayList<>();
     private TextView tvTotalPrice;
     private ImageView ivBack;
+    private LinearLayout emptyStateLayout;
+    private LinearLayout bottomContainer;
     private static final int PAYPAL_REQUEST_CODE = 123;
     private DatabaseHelper myDB;
     private int userId;
@@ -73,6 +80,8 @@ public class CartActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycleView);
         tvTotalPrice = findViewById(R.id.tvProductPrice);
         ivBack = findViewById(R.id.ivBack);
+        emptyStateLayout = findViewById(R.id.emptyStateLayout);
+        bottomContainer = findViewById(R.id.bottomContainer);
 
         // Get user ID from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
@@ -84,6 +93,33 @@ public class CartActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(productCartAdapter);
+
+        // Setup swipe to delete
+        ItemTouchHelper.SimpleCallback swipeToDeleteCallback = new ItemTouchHelper.SimpleCallback(
+                0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull androidx.recyclerview.widget.RecyclerView recyclerView,
+                                  @NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder viewHolder,
+                                  @NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    CartItem cartItem = cartItemList.get(position);
+                    myDB.deleteCartItem(userId, cartItem.getProductId());
+                    cartItemList.remove(position);
+                    productCartAdapter.notifyItemRemoved(position);
+                    updateTotalPrice();
+                    checkEmptyState();
+                }
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         ivBack.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
@@ -97,6 +133,7 @@ public class CartActivity extends AppCompatActivity {
                 updateTotalPrice();
                 CartItem cartItem = cartItemList.get(position);
                 myDB.updateCartItem(cartItem.getId(), cartItem.getQuantity());
+                checkEmptyState();
             }
 
             @Override
@@ -104,11 +141,43 @@ public class CartActivity extends AppCompatActivity {
                 updateTotalPrice();
                 CartItem cartItem = cartItemList.get(position);
                 myDB.deleteCartItem(userId, cartItem.getProductId());
+                checkEmptyState();
             }
         });
 
         findViewById(R.id.btnAddToCart).setOnClickListener(v -> processPayment());
+        
+        // Setup empty state button
+        View emptyStateView = findViewById(R.id.emptyStateLayout);
+        if (emptyStateView != null) {
+            Button btnContinueShopping = emptyStateView.findViewById(R.id.btnContinueShopping);
+            if (btnContinueShopping != null) {
+                btnContinueShopping.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+            }
+        }
+
         updateTotalPrice();
+        checkEmptyState();
+    }
+
+    private void checkEmptyState() {
+        if (cartItemList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            bottomContainer.setVisibility(View.GONE);
+            if (emptyStateLayout != null) {
+                emptyStateLayout.setVisibility(View.VISIBLE);
+            }
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            bottomContainer.setVisibility(View.VISIBLE);
+            if (emptyStateLayout != null) {
+                emptyStateLayout.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void updateTotalPrice() {
@@ -175,7 +244,7 @@ public class CartActivity extends AppCompatActivity {
                         }
 
                         // Insert order with order details
-                        myDB.insertOrder(userId, totalAmount, orderDate, "success", orderDetails);
+                        long orderId = myDB.insertOrder(userId, totalAmount, orderDate, "success", orderDetails);
 
                         // Reduce product quantities in the database
                         for (CartItem cartItem : cartItemList) {
@@ -190,11 +259,16 @@ public class CartActivity extends AppCompatActivity {
                         cartItemList.clear(); // Clear the local cart list
                         productCartAdapter.notifyDataSetChanged(); // Refresh cart RecyclerView
 
-                        Intent intent = new Intent("com.group4.gamecontrollershop.ORDER_PLACED");
-                        sendBroadcast(intent);
+                        Intent broadcastIntent = new Intent("com.group4.gamecontrollershop.ORDER_PLACED");
+                        sendBroadcast(broadcastIntent);
 
-                        // Update total price display
-                        updateTotalPrice();
+                        // Navigate to Payment Success Activity
+                        Intent successIntent = new Intent(this, PaymentSuccessActivity.class);
+                        successIntent.putExtra("orderId", String.valueOf(orderId));
+                        successIntent.putExtra("amount", String.format("%.2f", totalAmount));
+                        successIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(successIntent);
+                        finish(); // Close CartActivity
                     } catch (Exception e) {
                         Log.e("PaymentError", "Error processing payment: " + e.getMessage());
                     }
