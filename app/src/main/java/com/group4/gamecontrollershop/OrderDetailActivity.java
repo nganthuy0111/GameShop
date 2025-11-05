@@ -74,6 +74,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         }
 
         // Retrieve order details
+        @SuppressWarnings("unchecked")
         List<OrderDetail> orderDetails = (List<OrderDetail>) getIntent().getSerializableExtra("orderDetails");
         if (orderDetails != null) {
             setupRecyclerView(orderDetails);
