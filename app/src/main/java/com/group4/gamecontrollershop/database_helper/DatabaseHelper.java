@@ -25,7 +25,7 @@ import java.util.Random;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "game_controller.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     //product
     private static final String TABLE_PRODUCT = "Product";
@@ -60,7 +60,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "address TEXT, " +
             "googleId TEXT, " +
             "status TEXT, " +
-            "phone TEXT);";
+            "phone TEXT, " +
+            "role TEXT DEFAULT 'user');";
 
     private static final String CREATE_TABLE_BRAND = "CREATE TABLE Brand (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -151,18 +152,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Xóa các bảng cũ nếu tồn tại
-        db.execSQL("DROP TABLE IF EXISTS Favorite");
-        db.execSQL("DROP TABLE IF EXISTS OrderItem");
-        db.execSQL("DROP TABLE IF EXISTS `Order`");
-        db.execSQL("DROP TABLE IF EXISTS Product");
-        db.execSQL("DROP TABLE IF EXISTS Brand");
-        db.execSQL("DROP TABLE IF EXISTS User");
-        db.execSQL("DROP TABLE IF EXISTS Cart");
-        db.execSQL("DROP TABLE IF EXISTS OrderDetail");
-        // Tạo lại các bảng mới
-        onCreate(db);
-
+        if (oldVersion < 4) {
+            // Thêm cột role vào bảng User nếu chưa có
+            try {
+                db.execSQL("ALTER TABLE User ADD COLUMN role TEXT DEFAULT 'user'");
+                // Cập nhật tất cả user hiện tại thành role "user"
+                db.execSQL("UPDATE User SET role = 'user' WHERE role IS NULL OR role = ''");
+            } catch (Exception e) {
+                // Nếu cột đã tồn tại hoặc có lỗi, bỏ qua
+                e.printStackTrace();
+            }
+        }
+        
+        // Nếu version cũ hơn 3, vẫn giữ logic drop và recreate
+        if (oldVersion < 3) {
+            db.execSQL("DROP TABLE IF EXISTS Favorite");
+            db.execSQL("DROP TABLE IF EXISTS OrderItem");
+            db.execSQL("DROP TABLE IF EXISTS `Order`");
+            db.execSQL("DROP TABLE IF EXISTS Product");
+            db.execSQL("DROP TABLE IF EXISTS Brand");
+            db.execSQL("DROP TABLE IF EXISTS User");
+            db.execSQL("DROP TABLE IF EXISTS Cart");
+            db.execSQL("DROP TABLE IF EXISTS OrderDetail");
+            onCreate(db);
+        }
     }
 
     public void insertProduct(Product product) {
@@ -579,6 +592,96 @@ public List<Order> getAllOrders(int userId) {
     return orderList;
 }
 
+    /**
+     * Get all orders (admin) - without userId filter
+     */
+    @SuppressLint("Range")
+    public List<Order> getAllOrders() {
+        List<Order> orderList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        // Get all orders without userId filter
+        String query = "SELECT o.id, o.userId, o.totalAmount, o.orderDate, o.status, " +
+                "od.address, od.phone, od.email, od.productId, od.quantity, od.price, od.imageUrl, od.productName " +
+                "FROM `Order` o " +
+                "LEFT JOIN OrderDetail od ON o.id = od.orderId " +
+                "ORDER BY o.id DESC";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        int currentOrderId = -1;
+        Order currentOrder = null;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // Order information
+                int orderId = cursor.getInt(0);
+                int userId = cursor.getInt(1);
+                double totalAmount = cursor.getDouble(2);
+                String orderDateString = cursor.getString(3);
+                String status = cursor.getString(4);
+
+                // OrderDetail information
+                String address = cursor.isNull(5) ? "" : cursor.getString(5);
+                String phone = cursor.isNull(6) ? "" : cursor.getString(6);
+                String email = cursor.isNull(7) ? "" : cursor.getString(7);
+                int productId = cursor.isNull(8) ? 0 : cursor.getInt(8);
+                int quantity = cursor.isNull(9) ? 0 : cursor.getInt(9);
+                double price = cursor.isNull(10) ? 0 : cursor.getDouble(10);
+                String imageUrl = cursor.isNull(11) ? "" : cursor.getString(11);
+                String productName = cursor.isNull(12) ? "" : cursor.getString(12);
+
+                // Parse order date
+                Date orderDate = null;
+                try {
+                    if (orderDateString != null) {
+                        orderDate = dateFormat.parse(orderDateString);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                // If the order ID changes, create a new Order object
+                if (currentOrderId != orderId) {
+                    // If there's already a currentOrder, add it to the list
+                    if (currentOrder != null) {
+                        orderList.add(currentOrder);
+                    }
+
+                    // Create a new list for OrderDetail entries
+                    List<OrderDetail> orderDetails = new ArrayList<>();
+
+                    // Create a new OrderDetail object for the current order
+                    if (productId > 0) {
+                        OrderDetail orderDetail = new OrderDetail(0, orderId, userId, productId, quantity, price, address, phone, email, imageUrl, productName);
+                        orderDetails.add(orderDetail);
+                    }
+
+                    // Create a new Order object
+                    currentOrder = new Order(orderId, userId, totalAmount, orderDate, status, orderDetails);
+                    currentOrderId = orderId;
+                } else {
+                    // Add additional OrderDetail objects if the order ID is the same
+                    if (productId > 0) {
+                        OrderDetail orderDetail = new OrderDetail(0, orderId, userId, productId, quantity, price, address, phone, email, imageUrl, productName);
+                        currentOrder.getOrderDetails().add(orderDetail);
+                    }
+                }
+            } while (cursor.moveToNext());
+
+            // Add the last processed order
+            if (currentOrder != null) {
+                orderList.add(currentOrder);
+            }
+
+            cursor.close();
+        }
+
+        db.close();
+        return orderList;
+    }
+
     public long insertOrder(int userId, double totalAmount, String orderDate, String status, List<OrderDetail> orderDetails) {
         SQLiteDatabase db = this.getWritableDatabase();
         long orderId = -1;
@@ -816,6 +919,14 @@ public List<Order> getAllOrders(int userId) {
                 user.setAddress(cursor.getString(cursor.getColumnIndex("address"))); // Load address
                 user.setPhone(cursor.getString(cursor.getColumnIndex("phone"))); // Load phone
                 user.setAvatarUrl(cursor.getString(cursor.getColumnIndex("avatarUrl"))); // Load avatar URL
+                // Load role, default to "user" if null or empty
+                try {
+                    String role = cursor.getString(cursor.getColumnIndex("role"));
+                    user.setRole(role != null && !role.isEmpty() ? role : "user");
+                } catch (Exception e) {
+                    // Column might not exist in older databases
+                    user.setRole("user");
+                }
             }
             cursor.close();
         }
@@ -843,6 +954,7 @@ public List<Order> getAllOrders(int userId) {
         contentValues.put("address", username);
         contentValues.put("phone", phone);
         contentValues.put("avatarUrl", avatarUrl); // Include avatar URL in insert
+        contentValues.put("role", "user"); // Default role is "user"
 
         // Check if the user already exists by googleId
         if (isGoogleUserExists(googleId)) {
@@ -1050,7 +1162,200 @@ public List<Order> getAllOrders(int userId) {
         return false; // Default return if cursor is null
     }
 
+    // ============ ADMIN METHODS - CRUD PRODUCTS ============
+    
+    /**
+     * Get all products (including inactive) for admin
+     */
+    public List<Product> getAllProducts() {
+        List<Product> productList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        Cursor cursor = db.query(TABLE_PRODUCT, new String[]{
+                        PRODUCT_COLUMN_ID, PRODUCT_COLUMN_NAME, PRODUCT_COLUMN_DESCRIPTION, PRODUCT_COLUMN_IMG_URL,
+                        PRODUCT_COLUMN_DETAIL_IMG_URL_FIRST, PRODUCT_COLUMN_DETAIL_IMG_URL_SECOND, PRODUCT_COLUMN_DETAIL_IMG_URL_THIRD,
+                        PRODUCT_COLUMN_OLD_PRICE, PRODUCT_COLUMN_NEW_PRICE, PRODUCT_COLUMN_QUANTITY,
+                        PRODUCT_COLUMN_BRAND_ID, PRODUCT_COLUMN_RELEASE_DATE, PRODUCT_COLUMN_STATUS},
+                null, null, null, null, PRODUCT_COLUMN_ID + " DESC", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            do {
+                Date releaseDate = null;
+                try {
+                    releaseDate = dateFormat.parse(cursor.getString(11));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Product product = new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
+                        cursor.getString(4), cursor.getString(5), cursor.getString(6),
+                        cursor.getDouble(7), cursor.getDouble(8), cursor.getInt(9), releaseDate, cursor.getString(12), cursor.getInt(10));
+                productList.add(product);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return productList;
+    }
+
+    /**
+     * Update product (admin)
+     */
+    public boolean updateProduct(Product product) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PRODUCT_COLUMN_NAME, product.getName());
+        values.put(PRODUCT_COLUMN_DESCRIPTION, product.getDescription());
+        values.put(PRODUCT_COLUMN_IMG_URL, product.getImgUrl());
+        values.put(PRODUCT_COLUMN_DETAIL_IMG_URL_FIRST, product.getDetailImgUrlFirst());
+        values.put(PRODUCT_COLUMN_DETAIL_IMG_URL_SECOND, product.getDetailImgUrlSecond());
+        values.put(PRODUCT_COLUMN_DETAIL_IMG_URL_THIRD, product.getDetailImgUrlThird());
+        values.put(PRODUCT_COLUMN_OLD_PRICE, product.getOldPrice());
+        values.put(PRODUCT_COLUMN_NEW_PRICE, product.getNewPrice());
+        values.put(PRODUCT_COLUMN_QUANTITY, product.getQuantity());
+        values.put(PRODUCT_COLUMN_BRAND_ID, product.getBrandId());
+        values.put(PRODUCT_COLUMN_STATUS, product.getStatus());
+
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String releaseDateString = dateFormat.format(product.getReleaseDate());
+        values.put(PRODUCT_COLUMN_RELEASE_DATE, releaseDateString);
+
+        int result = db.update(TABLE_PRODUCT, values, PRODUCT_COLUMN_ID + "=?", new String[]{String.valueOf(product.getId())});
+        db.close();
+        return result > 0;
+    }
+
+    /**
+     * Delete product (admin)
+     */
+    public boolean deleteProduct(int productId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_PRODUCT, PRODUCT_COLUMN_ID + "=?", new String[]{String.valueOf(productId)});
+        db.close();
+        return result > 0;
+    }
+
+    // ============ ADMIN METHODS - CRUD USERS ============
+    
+    /**
+     * Get all users (admin)
+     */
+    @SuppressLint("Range")
+    public List<User> getAllUsers() {
+        List<User> userList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("User", null, null, null, null, null, "id DESC", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                User user = new User();
+                user.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                user.setFullname(cursor.getString(cursor.getColumnIndex("fullname")));
+                user.setUsername(cursor.getString(cursor.getColumnIndex("username")));
+                user.setAddress(cursor.getString(cursor.getColumnIndex("address")));
+                user.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
+                user.setAvatarUrl(cursor.getString(cursor.getColumnIndex("avatarUrl")));
+                try {
+                    String role = cursor.getString(cursor.getColumnIndex("role"));
+                    user.setRole(role != null && !role.isEmpty() ? role : "user");
+                } catch (Exception e) {
+                    user.setRole("user");
+                }
+                userList.add(user);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return userList;
+    }
+
+    /**
+     * Update user (admin) - including role
+     */
+    public boolean updateUser(int userId, String fullname, String username, String address, String phone, String role) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("fullname", fullname);
+        values.put("username", username);
+        values.put("address", address);
+        values.put("phone", phone);
+        values.put("role", role != null ? role : "user");
+
+        int result = db.update("User", values, "id = ?", new String[]{String.valueOf(userId)});
+        db.close();
+        return result > 0;
+    }
+
+    /**
+     * Update user role (admin)
+     */
+    public boolean updateUserRole(int userId, String role) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("role", role != null ? role : "user");
+
+        int result = db.update("User", values, "id = ?", new String[]{String.valueOf(userId)});
+        db.close();
+        return result > 0;
+    }
+
+    /**
+     * Delete user (admin)
+     */
+    public boolean deleteUser(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete("User", "id = ?", new String[]{String.valueOf(userId)});
+        db.close();
+        return result > 0;
+    }
+
+    /**
+     * Check if admin user exists, if not create default admin user
+     */
+    public void ensureAdminUserExists() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query("User", new String[]{"id"}, "role = ? AND username = ?", 
+                    new String[]{"admin", "admin"}, null, null, null);
+            
+            boolean adminExists = cursor != null && cursor.moveToFirst();
+            
+            if (!adminExists) {
+                // Create default admin user - need to close read db first
+                if (cursor != null) {
+                    cursor.close();
+                    cursor = null;
+                }
+                db.close();
+                
+                // Open write database
+                SQLiteDatabase writeDb = this.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("fullname", "Administrator");
+                values.put("username", "admin");
+                values.put("password", "admin123"); // Default password - should be changed
+                values.put("avatarUrl", "");
+                values.put("address", "");
+                values.put("googleId", "");
+                values.put("status", "verified");
+                values.put("phone", "");
+                values.put("role", "admin");
+                
+                writeDb.insert("User", null, values);
+                writeDb.close();
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+    }
 
 }
 

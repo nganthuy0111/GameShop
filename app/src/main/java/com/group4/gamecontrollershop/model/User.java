@@ -8,6 +8,7 @@ public class User {
     private String address;
     private String phone;
     private String fullname; // Add fullname field
+    private String role; // User role: "user" or "admin"
 
     public User() {
     }
@@ -20,6 +21,18 @@ public class User {
         this.address = address;
         this.phone = phone;
         this.fullname = fullname; // Initialize fullname
+        this.role = "user"; // Default role
+    }
+
+    public User(int id, String username, String password, String avatarUrl, String address, String phone, String fullname, String role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.avatarUrl = avatarUrl;
+        this.address = address;
+        this.phone = phone;
+        this.fullname = fullname;
+        this.role = role != null ? role : "user"; // Default to "user" if null
     }
 
     public int getId() {
@@ -76,5 +89,13 @@ public class User {
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
+    }
+
+    public String getRole() {
+        return role != null ? role : "user"; // Default to "user" if null
+    }
+
+    public void setRole(String role) {
+        this.role = role != null ? role : "user"; // Default to "user" if null
     }
 }

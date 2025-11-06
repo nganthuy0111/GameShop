@@ -41,10 +41,10 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth auth;
     GoogleSignInClient googleSignInClient;
     CallbackManager callbackManager; // For Facebook Login
-    SQLiteDatabase myDB;
 
     private EditText username, password;
     private Button loginButton;
+    private DatabaseHelper dbHelper;
 
 
     @Override
@@ -61,8 +61,10 @@ public class LoginActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         // Initialize SQLite Database
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        myDB = dbHelper.getWritableDatabase();
+        dbHelper = new DatabaseHelper(this);
+        
+        // Ensure default admin user exists
+        dbHelper.ensureAdminUserExists();
 
         // Configure Google Sign-In
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -123,7 +125,8 @@ public class LoginActivity extends AppCompatActivity {
                 String avatarUrl = account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "";
 
                 // Check if the user exists in the local database by Google ID
-                Cursor cursor = myDB.rawQuery("SELECT id FROM User WHERE googleId = ?", new String[]{googleId});
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                Cursor cursor = db.rawQuery("SELECT id FROM User WHERE googleId = ?", new String[]{googleId});
                 if (cursor != null && cursor.moveToFirst()) {
                     // Get the user ID from the cursor
                     @SuppressLint("Range") String idFromCursor = cursor.getString(cursor.getColumnIndex("id"));
@@ -135,11 +138,16 @@ public class LoginActivity extends AppCompatActivity {
                     editor.apply(); // Save changes asynchronously
 
                     cursor.close(); // Close the cursor
+                    db.close();
 
                     // User already exists, navigate to MainActivity
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish(); // End this activity
                 } else {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                    db.close();
                     // User does not exist, insert into local database
                     insertGoogleUser(googleId, email, avatarUrl);
 
@@ -165,7 +173,8 @@ public class LoginActivity extends AppCompatActivity {
                 String avatarUrl = ""; // Optionally fetch the profile picture URL if needed
 
                 // Check if the user exists in the local database by Facebook ID
-                Cursor cursor = myDB.rawQuery("SELECT id FROM User WHERE facebookId = ?", new String[]{facebookId});
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                Cursor cursor = db.rawQuery("SELECT id FROM User WHERE googleId = ?", new String[]{facebookId});
                 if (cursor != null && cursor.moveToFirst()) {
                     // Get the user ID from the cursor
                     @SuppressLint("Range") String idFromCursor = cursor.getString(cursor.getColumnIndex("id"));
@@ -177,11 +186,16 @@ public class LoginActivity extends AppCompatActivity {
                     editor.apply(); // Save changes asynchronously
 
                     cursor.close(); // Close the cursor
+                    db.close();
 
                     // User already exists, navigate to MainActivity
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish(); // End this activity
                 } else {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                    db.close();
                     // User does not exist, insert into local database
                     insertFacebookUser(facebookId, email, avatarUrl);
 
@@ -205,10 +219,12 @@ public class LoginActivity extends AppCompatActivity {
 
     // Check if Google user already exists in the local database
     private boolean isGoogleUserExists(String googleId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT * FROM User WHERE googleId = ?";
-        Cursor cursor = myDB.rawQuery(query, new String[]{googleId});
+        Cursor cursor = db.rawQuery(query, new String[]{googleId});
         boolean exists = cursor.getCount() > 0;
         cursor.close();
+        db.close();
         return exists;
     }
 
@@ -222,8 +238,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Check user credentials
-        Cursor cursor = myDB.rawQuery("SELECT * FROM User WHERE username = ? AND password = ?", new String[]{user, pass});
+        // Check user credentials - use DatabaseHelper to get a fresh connection
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM User WHERE username = ? AND password = ?", new String[]{user, pass});
 
         if (cursor.moveToFirst()) {
             // Login successful
@@ -236,7 +253,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("userId", userId);
-            editor.apply(); // Save changes asynchronously
+            editor.commit(); // Save changes synchronously to ensure it's saved before navigation
 
             // Navigate to MainActivity
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -247,31 +264,40 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
         }
 
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
     }
 
     private void insertGoogleUser(String googleId, String email, String avatarUrl) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("googleId", googleId);
         values.put("username", email); // You can use email or set a default username
         values.put("avatarUrl", avatarUrl);
         values.put("fullname", ""); // You can set default or leave it empty
         values.put("address", ""); // Optional: leave empty or set default
-        values.put("status", ""); // Optional: leave empty or set default
+        values.put("status", "verified"); // Optional: leave empty or set default
         values.put("phone", ""); // Optional: leave empty or set default
-        myDB.insert("User", null, values);
+        values.put("role", "user"); // Default role is "user"
+        db.insert("User", null, values);
+        db.close();
     }
 
     private void insertFacebookUser(String facebookId, String email, String avatarUrl) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("facebookId", facebookId);
+        values.put("googleId", facebookId);
         values.put("username", email); // You can use email or set a default username
         values.put("avatarUrl", avatarUrl);
         values.put("fullname", ""); // You can set default or leave it empty
         values.put("address", ""); // Optional: leave empty or set default
-        values.put("status", ""); // Optional: leave empty or set default
+        values.put("status", "verified"); // Optional: leave empty or set default
         values.put("phone", ""); // Optional: leave empty or set default
-        myDB.insert("User", null, values);
+        values.put("role", "user"); // Default role is "user"
+        db.insert("User", null, values);
+        db.close();
     }
 
     @Override
