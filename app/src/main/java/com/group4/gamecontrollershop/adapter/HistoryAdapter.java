@@ -56,7 +56,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             String userAddress = db.getUserAddress(userId);
             String userPhone = db.getUserPhone(userId);
 
-
             // Open the order detail activity and pass the order and user details
             Intent intent = new Intent(context, OrderDetailActivity.class);
             intent.putExtra("orderId", order.getId());

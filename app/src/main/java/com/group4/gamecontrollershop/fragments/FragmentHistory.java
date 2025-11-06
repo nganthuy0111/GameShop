@@ -48,11 +48,9 @@ public class FragmentHistory extends Fragment {
 
         Date orderDate = null;
         try {
-            // You might want to get a dynamic date instead
             orderDate = dateFormat.parse("2023-08-15");
         } catch (ParseException e) {
             e.printStackTrace();
-            // Consider displaying an error message or fallback here
         }
 
         // Get userId from SharedPreferences
@@ -70,21 +68,6 @@ public class FragmentHistory extends Fragment {
 
         // Fetch all orders for the current user
         orderList = myDB.getAllOrders(Integer.parseInt(userId));
-
-//        // If no orders exist, insert sample orders (for testing purposes)
-//        if (orderList.isEmpty()) {
-//            final String SUCCESS_STATUS = "success";
-//            final String FAILURE_STATUS = "failure";
-//
-//            myDB.insertOrder(Integer.parseInt(userId), 1500000d, orderDate, SUCCESS_STATUS);
-//            myDB.insertOrder(Integer.parseInt(userId), 1500000d, orderDate, SUCCESS_STATUS);
-//            myDB.insertOrder(Integer.parseInt(userId), 1500000d, orderDate, SUCCESS_STATUS);
-//            myDB.insertOrder(Integer.parseInt(userId), 1500000d, orderDate, FAILURE_STATUS);
-//            myDB.insertOrder(Integer.parseInt(userId), 1500000d, orderDate, SUCCESS_STATUS);
-//
-//            // Refresh order list after insertion
-//            orderList = myDB.getAllOrders(Integer.parseInt(userId));
-//        }
 
         // Set up RecyclerView
         historyAdapter = new HistoryAdapter(orderList, getContext());
